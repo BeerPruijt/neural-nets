@@ -27,7 +27,6 @@ def test_with_zeros():
     with pytest.warns(RuntimeWarning):
         result = log_diff_column(data, 'A', dropna=False)
         expected = np.log(data['A']).diff()
-    
     pd.testing.assert_series_equal(result, expected)
 
 def test_with_nan_values():

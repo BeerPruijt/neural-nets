@@ -92,7 +92,7 @@ class Seq2SeqRNN(nn.Module):
         outputs = torch.cat(outputs, dim=1)  # Shape: (batch_size, output_seq_len, output_size)
         return outputs.squeeze(-1)  # Remove last dimension
     
-def train_model(train_series, num_input_lags, forecast_horizon, batch_size=32, num_epochs=10, learning_rate=0.001):
+def train_model(train_series, num_input_lags, forecast_horizon, hidden_size, num_layers, batch_size=32, num_epochs=10, learning_rate=0.001):
     """
     Train the RNN model on the training data.
 
@@ -112,7 +112,7 @@ def train_model(train_series, num_input_lags, forecast_horizon, batch_size=32, n
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
     # Initialize the model, loss function, and optimizer
-    model = Seq2SeqRNN(input_size=1, hidden_size=20, num_layers=2, output_size=1, output_seq_len=forecast_horizon)
+    model = Seq2SeqRNN(input_size=1, hidden_size=hidden_size, num_layers=num_layers, output_size=1, output_seq_len=forecast_horizon)
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -177,6 +177,8 @@ def forecast_with_rnn(last_month, **kwargs):
     learning_rate = kwargs['learning_rate']
     forecast_horizon = kwargs['forecast_horizon']
     batch_size = kwargs['batch_size']
+    num_layers = kwargs['num_layers']
+    hidden_size = kwargs['hidden_size']
 
     # Slice the series up to last_month
     series_temp = diff_log_series.loc[:last_month]
@@ -192,7 +194,9 @@ def forecast_with_rnn(last_month, **kwargs):
         forecast_horizon, 
         batch_size=batch_size, 
         num_epochs=num_epochs, 
-        learning_rate=learning_rate
+        learning_rate=learning_rate,
+        hidden_size=hidden_size,
+        num_layers=num_layers
     )
 
     # Prepare input sequence

@@ -100,11 +100,19 @@ def forecast_with_observations(last_month, **kwargs):
     Returns:
     - np.ndarray: Observed values from the data.
     """
-    data = kwargs['data']
+    data = kwargs['data'].copy()
+    how = kwargs['how']
+    column = kwargs['column']
+    forecast_horizon = kwargs['forecast_horizon']
+
+    # Convert to dlog if specified
+    if how == 'dlog':
+        data.loc[:, column] = log_diff_column(data, column, dropna=False)
+
     # Generate forecast months
     start_month = pd.to_datetime(last_month) + pd.DateOffset(months=1)
-    forecast_months = pd.date_range(start=start_month, periods=12, freq='MS')
-    observations = data.loc[forecast_months, 'C000000'].values
+    forecast_months = pd.date_range(start=start_month, periods=forecast_horizon, freq='MS')
+    observations = data.loc[forecast_months, column].values
     return observations
 
 def run_forecasts(storage_df, forecasting_method, **kwargs):
@@ -120,7 +128,7 @@ def run_forecasts(storage_df, forecasting_method, **kwargs):
     - DataFrame: The updated storage DataFrame with forecasts.
     """
     for last_month in storage_df.index:
-        print(f"Processing forecasts for: {last_month}")
+        #print(f"Processing forecasts for: {last_month}")
 
         # Generate predictions
         predictions = forecasting_method(last_month, **kwargs)
