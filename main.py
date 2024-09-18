@@ -60,7 +60,7 @@ def objective(trial):
     }
     
     # Run the forecasts using RNN
-    df_rnn.loc[:, :] = learning_rate #df_rnn = run_forecasts(df_rnn, forecast_with_rnn, **rnn_kwargs)
+    df_rnn = run_forecasts(df_rnn, forecast_with_rnn, **rnn_kwargs)
     
     # Run the forecasts using observations
     df_observations = run_forecasts(df_observations, forecast_with_observations, **observations_kwargs)
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     study = optuna.create_study(direction='minimize')
     
     # Optimize the objective function
-    study.optimize(objective, n_trials=20, callbacks=[mlflow_callback])
+    study.optimize(objective, n_trials=100, callbacks=[mlflow_callback])
     
     # Print best trial results
     print('Best trial:')
