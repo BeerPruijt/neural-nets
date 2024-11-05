@@ -133,7 +133,7 @@ def train_model(train_series, num_input_lags, forecast_horizon, hidden_size, num
             epoch_loss += loss.item()
 
         avg_loss = epoch_loss / len(dataloader)
-        print(f'Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}')
+        #print(f'Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}')
 
     return model
 

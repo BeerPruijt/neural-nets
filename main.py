@@ -16,7 +16,7 @@ def objective(trial):
     # Hyperparameters to optimize
     num_input_lags = trial.suggest_int('num_input_lags', 1, 12)
     batch_size = trial.suggest_categorical('batch_size', [1, 8, 16, 32])
-    num_epochs = trial.suggest_categorical('num_epochs', [10, 20, 40, 80, 160])
+    num_epochs = trial.suggest_categorical('num_epochs', [10, 20, 40, 80])
     hidden_size = trial.suggest_int('hidden_size', 10, 100)
     num_layers = trial.suggest_categorical('num_layers', [1, 2, 3])
     learning_rate = trial.suggest_float('learning_rate', 1e-7, 1e-1, log=True)
